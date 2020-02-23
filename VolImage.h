@@ -1,5 +1,11 @@
+#ifndef VOLIMAGE_H
+#define VOLIMAGE_H
+
 #include <string>
 #include <vector>
+
+namespace CHNJAR003
+{
 
 class VolImage
 {
@@ -20,3 +26,5 @@ public:                                   // public members
     //and pointers (ignore vector<> container, dims etc)
     int volImageSize(void); // define in .cpp
 };
+} // namespace CHNJAR003
+#endif
