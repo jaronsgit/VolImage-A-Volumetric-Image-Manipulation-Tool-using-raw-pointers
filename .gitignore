@@ -3,3 +3,5 @@ MRI_originals_png/
 brain_mri_raws/
 diffmap.py
 viewer.py
+*.o
+volimage
