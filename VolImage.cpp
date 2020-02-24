@@ -24,37 +24,77 @@ CHNJAR003::VolImage::~VolImage()
 bool CHNJAR003::VolImage::readImages(std::string baseName)
 {
     std::ifstream baseNameFile;
-
+    //try to open the image base header file
     baseNameFile.open((baseName + ".data").c_str());
 
     if (!baseNameFile)
     {
         std::cerr << "File with base name: " << baseName << " could not be opened for reading.";
+        return false;
     }
-    else
+    else //was able to open the image base header file
     {
         CHNJAR003::VolImage::slices.clear();
 
-        while (!baseNameFile.eof())
+        std::string line;
+        getline(baseNameFile, line);
+
+        std::istringstream iss(line);
+        std::string token;
+        std::vector<std::string> tokens;
+
+        while (getline(iss, token, ' '))
         {
-            std::string line;
-            getline(baseNameFile, line);
-
-            std::istringstream iss(line);
-            std::string token;
-            std::vector<std::string> tokens;
-
-            while (getline(iss, token, ' '))
-            {
-                tokens.push_back(token);
-            }
-
-            for (std::string temp : tokens)
-            {
-                PRINT(temp + '\n');
-            }
+            tokens.push_back(token);
         }
-    }
 
-    return false;
+        for (std::string temp : tokens)
+        {
+            PRINT(temp + '\n');
+        }
+
+        baseNameFile.close();
+
+        width = std::stoi(tokens[0]);
+        height = std::stoi(tokens[1]);
+        int numSlices = std::stoi(tokens[2]);
+
+        //Loop through all the image slices - essentially the number of images
+        for (int i = 0; i < numSlices; i++)
+        {
+            std::ifstream ifs;
+            //open the image slice for binary reading
+            ifs.open((baseName + std::to_string(i) + ".raw").c_str(), std::ios::in | std::ios::binary);
+
+            //if was able to open the image for binary processing
+            if (ifs.is_open())
+            {
+                //Create new slice element to add to the slices vector
+                //Array of unsigned char pointers for the columns
+                unsigned char **tempSliceCols = new unsigned char *[height];
+
+                /*
+                //temporary array to read in the binary data from the .raw file
+                char *temp = new char[width];
+                */
+                //Process the rows of pixels of the .raw image
+                for (int row = 0; row < height; row++)
+                {
+
+                    unsigned char *tempSliceRow = new unsigned char[width];
+                    ifs.read((char *)tempSliceRow, width);
+                    tempSliceCols[row] = tempSliceRow;
+                }
+
+                slices.push_back(tempSliceCols);
+            }
+            else
+            {
+                PRINT("Unable to process file: " + baseName + std::to_string(i));
+            }
+            ifs.close();
+        }
+
+        return true;
+    }
 }
