@@ -4,4 +4,8 @@ brain_mri_raws/
 diffmap.py
 viewer.py
 *.o
+*.data
+*.raw
+*.dat
+.vscode/
 volimage
