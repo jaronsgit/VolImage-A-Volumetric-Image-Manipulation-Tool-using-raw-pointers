@@ -25,6 +25,8 @@ public:                                   // public members
     // number of bytes uses to store image data bytes
     //and pointers (ignore vector<> container, dims etc)
     int volImageSize(void); // define in .cpp
+    //extract an image along row i of the image volume and write it to output.
+    void extractRow(int row, std::string output_prefix);
 };
 } // namespace CHNJAR003
 #endif
