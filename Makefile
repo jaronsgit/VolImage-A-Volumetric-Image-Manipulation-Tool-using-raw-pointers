@@ -19,5 +19,7 @@ install:
   
 	@mv volimage ~/bin
 
+#./volimage MRI -d 0 1 testOutFinal
+#./volimage ./brain_mri_raws/MRI -g 30 rowSliceTest
 run:
-	./volimage MRI -d 0 1 testOutFinal
+	./volimage ./brain_mri_raws/MRI
