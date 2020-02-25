@@ -20,4 +20,4 @@ install:
 	@mv volimage ~/bin
 
 run:
-	./volimage
+	./volimage MRI -d 0 1 testOutFinal
