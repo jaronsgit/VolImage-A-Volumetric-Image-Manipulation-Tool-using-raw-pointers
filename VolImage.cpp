@@ -107,7 +107,7 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
 
 void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
 {
-    PRINT("VolImage extract() method called. Extracting requested image slice.\n");
+    PRINT("VolImage extract() method called -> Extracting requested image slice.\n");
 
     int numSlices = slices.size();
 
@@ -137,7 +137,7 @@ void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
 
 void CHNJAR003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_prefix)
 {
-    PRINT("VolImage diffmap() method called. Computing difference map between requested image slices.\n");
+    PRINT("VolImage diffmap() method called -> Computing difference map between requested image slices.\n");
     int numSlices = slices.size();
     //If the slice indices are valid
     if ((sliceI >= 0) && (sliceI < numSlices) && (sliceJ >= 0) && (sliceJ < numSlices))
@@ -169,7 +169,6 @@ int CHNJAR003::VolImage::volImageSize(void)
     //Store the number of images in the slices vector
     int numImages = slices.size();
     PRINT("Number of images: " + std::to_string(numImages) + "\n");
-
     //Store the number of bytes required for a char pointer
     int byteSizeUnsignedCharPointer = sizeof(unsigned char *);
 
@@ -177,4 +176,34 @@ int CHNJAR003::VolImage::volImageSize(void)
     int numBytesRequired = numImages * height * width * byteSizeUnsignedCharPointer;
 
     return numBytesRequired;
+}
+
+void CHNJAR003::VolImage::extractRow(int row, std::string output_prefix)
+{
+    PRINT("Extra credit extractRow() method called -> Extracting image along row " + std::to_string(row) + "of the volume of slices.\n");
+
+    int numSlices = slices.size();
+
+    std::string outFileName = output_prefix + ".raw";
+    std::ofstream outputRowSliceStream;
+    outputRowSliceStream.open(outFileName.c_str(), std::ios::binary | std::ios::out);
+
+    PRINT("Writing extracted image slice to file: " + outFileName + "\n");
+
+    unsigned char *tempRow = new unsigned char[width];
+
+    for (int i = 0; i < numSlices; i++)
+    {
+        for (int rowPixel = 0; rowPixel < width; rowPixel++)
+        {
+
+            tempRow[rowPixel] = slices[i][row][rowPixel];
+        }
+        outputRowSliceStream.write((char *)tempRow, width);
+    }
+
+    outputRowSliceStream.close();
+    delete[] tempRow;
+
+    PRINT("Image extracted along row " + std::to_string(row) + "of the volume of slices.\n");
 }
