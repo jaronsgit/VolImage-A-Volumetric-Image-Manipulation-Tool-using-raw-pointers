@@ -137,3 +137,30 @@ void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
         PRINT("Extract method finished extracting requested slice.");
     }
 }
+
+void CHNJAR003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_prefix)
+{
+
+    int numSlices = slices.size();
+    //If the slice indices are valid
+    if ((sliceI >= 0) && (sliceI < numSlices) && (sliceJ >= 0) && (sliceJ < numSlices))
+    {
+        unsigned char *tempDiffRow = new unsigned char[width];
+
+        std::ofstream outputSliceRaw;
+        outputSliceRaw.open((output_prefix + ".raw").c_str(), std::ios::binary | std::ios::out);
+
+        for (int r = 0; r < height; r++)
+        {
+
+            for (int c = 0; c < width; c++)
+            {
+                tempDiffRow[c] = (unsigned char)(abs((float)slices[sliceI][r][c] - (float)slices[sliceJ][r][c]) / 2);
+            }
+
+            outputSliceRaw.write((char *)tempDiffRow, width);
+        }
+        outputSliceRaw.close();
+        delete[] tempDiffRow;
+    }
+}
