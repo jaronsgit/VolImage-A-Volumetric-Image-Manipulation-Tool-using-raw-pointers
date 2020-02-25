@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <string>
 #include "VolImage.h"
 
@@ -6,7 +7,7 @@
 
 int main(int argc, char *argv[])
 {
-    PRINT(argc + "\n");
+    PRINT("\n\n");
 
     if (argc == 2)
     {
@@ -14,7 +15,8 @@ int main(int argc, char *argv[])
 
         CHNJAR003::VolImage *temp = new CHNJAR003::VolImage();
         temp->readImages(imageBase);
-        //PRINT("Number of bytes required: " + std::to_string(temp->volImageSize()) + "\n");
+
+        PRINT("Number of bytes required: " + std::to_string(temp->volImageSize()) + "\n\n");
 
         delete temp;
     }
@@ -37,7 +39,8 @@ int main(int argc, char *argv[])
 
                 temp->readImages(imageBase);
                 temp->diffmap(imageI, imageJ, outputFileName);
-                //PRINT("Number of bytes required: " + std::to_string(temp->volImageSize()) + "\n");
+
+                PRINT("Number of bytes required: " + std::to_string(temp->volImageSize()) + "\n\n");
 
                 delete temp;
             }
@@ -57,13 +60,34 @@ int main(int argc, char *argv[])
 
                 temp->readImages(imageBase);
                 temp->extract(imageI, outputFileName);
-                //PRINT("Number of bytes required: " + std::to_string(temp->volImageSize()) + "\n");
+
+                PRINT("Number of bytes required: " + std::to_string(temp->volImageSize()) + "\n\n");
 
                 delete temp;
             }
             else
             {
                 std::cerr << "Incorrect flag parameters passed in for -x (slice extraction).";
+            }
+        }
+        else if (flag1 == "-g")
+        {
+            if (argc == 5)
+            {
+                int row = std::stoi(argv[3]);
+                std::string outputFileName = argv[4];
+                CHNJAR003::VolImage *temp = new CHNJAR003::VolImage();
+
+                temp->readImages(imageBase);
+                temp->extractRow(row, outputFileName);
+
+                PRINT("Number of bytes required: " + std::to_string(temp->volImageSize()) + "\n\n");
+
+                delete temp;
+            }
+            else
+            {
+                std::cerr << "Incorrect flag parameters passed in for -g (row slice extraction).";
             }
         }
     }
