@@ -180,7 +180,7 @@ int CHNJAR003::VolImage::volImageSize(void)
 
 void CHNJAR003::VolImage::extractRow(int row, std::string output_prefix)
 {
-    PRINT("Extra credit extractRow() method called -> Extracting image along row " + std::to_string(row) + "of the volume of slices.\n");
+    PRINT("Extra credit extractRow() method called -> Extracting image along row " + std::to_string(row) + " of the volume of slices.\n");
 
     int numSlices = slices.size();
 
@@ -205,5 +205,5 @@ void CHNJAR003::VolImage::extractRow(int row, std::string output_prefix)
     outputRowSliceStream.close();
     delete[] tempRow;
 
-    PRINT("Image extracted along row " + std::to_string(row) + "of the volume of slices.\n");
+    PRINT("Image extracted along row " + std::to_string(row) + " of the volume of slices.\n");
 }
