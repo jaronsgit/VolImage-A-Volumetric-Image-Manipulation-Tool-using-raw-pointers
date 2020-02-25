@@ -24,10 +24,6 @@ CHNJAR003::VolImage::~VolImage()
 bool CHNJAR003::VolImage::readImages(std::string baseName)
 {
 
-    PRINT("Slices size: ");
-    PRINT(slices.size());
-    PRINT("\n");
-
     std::ifstream baseNameFile;
     //try to open the image base header file
     baseNameFile.open((baseName + ".data").c_str());
@@ -53,10 +49,11 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
             tokens.push_back(token);
         }
 
+        /*
         for (std::string temp : tokens)
         {
             PRINT(temp + '\n');
-        }
+        }*/
 
         baseNameFile.close();
 
@@ -94,9 +91,9 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
                 slices.push_back(tempSliceCols);
                 ifs.close();
 
-                PRINT("Slices size: ");
+                /*PRINT("Slices size: ");
                 PRINT(slices.size());
-                PRINT("\n");
+                PRINT("\n");*/
             }
             else
             {
@@ -110,7 +107,7 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
 
 void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
 {
-    PRINT("About to extract.\n");
+    PRINT("VolImage extract() method called. Extracting requested image slice.\n");
 
     int numSlices = slices.size();
 
@@ -127,20 +124,20 @@ void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
 
         std::ofstream outputFile;
         outputFile.open((output_prefix + ".raw").c_str(), std::ios::binary | std::ios::out);
-
+        PRINT("Writing extracted image slice to file: " + output_prefix + ".raw\n");
         for (int i = 0; i < height; i++)
         {
             outputFile.write((char *)tempSliceHolder[i], width);
         }
 
         outputFile.close();
-        PRINT("Extract method finished extracting requested slice.");
+        PRINT("Extract method finished extracting requested slice.\n");
     }
 }
 
 void CHNJAR003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_prefix)
 {
-
+    PRINT("VolImage diffmap() method called. Computing difference map between requested image slices.\n");
     int numSlices = slices.size();
     //If the slice indices are valid
     if ((sliceI >= 0) && (sliceI < numSlices) && (sliceJ >= 0) && (sliceJ < numSlices))
@@ -149,7 +146,7 @@ void CHNJAR003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_pre
 
         std::ofstream outputSliceRaw;
         outputSliceRaw.open((output_prefix + ".raw").c_str(), std::ios::binary | std::ios::out);
-
+        PRINT("Writing computed difference map to file: " + output_prefix + ".raw\n");
         for (int r = 0; r < height; r++)
         {
 
@@ -162,5 +159,22 @@ void CHNJAR003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_pre
         }
         outputSliceRaw.close();
         delete[] tempDiffRow;
+
+        PRINT("Difference Map method finished computing difference map.\n");
     }
+}
+
+int CHNJAR003::VolImage::volImageSize(void)
+{
+    //Store the number of images in the slices vector
+    int numImages = slices.size();
+    PRINT("Number of images: " + std::to_string(numImages) + "\n");
+
+    //Store the number of bytes required for a char pointer
+    int byteSizeUnsignedCharPointer = sizeof(unsigned char *);
+
+    //Calculate the total number of bytes required to store all the image data
+    int numBytesRequired = numImages * height * width * byteSizeUnsignedCharPointer;
+
+    return numBytesRequired;
 }
