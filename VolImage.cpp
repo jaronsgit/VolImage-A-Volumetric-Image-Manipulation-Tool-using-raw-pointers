@@ -23,6 +23,11 @@ CHNJAR003::VolImage::~VolImage()
 
 bool CHNJAR003::VolImage::readImages(std::string baseName)
 {
+
+    PRINT("Slices size: ");
+    PRINT(slices.size());
+    PRINT("\n");
+
     std::ifstream baseNameFile;
     //try to open the image base header file
     baseNameFile.open((baseName + ".data").c_str());
@@ -87,12 +92,16 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
                 }
 
                 slices.push_back(tempSliceCols);
+                ifs.close();
+
+                PRINT("Slices size: ");
+                PRINT(slices.size());
+                PRINT("\n");
             }
             else
             {
                 PRINT("Unable to process file: " + baseName + std::to_string(i));
             }
-            ifs.close();
         }
 
         return true;
@@ -101,22 +110,23 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
 
 void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
 {
+    PRINT("About to extract.\n");
 
     int numSlices = slices.size();
 
     //If the sliceId is valid
-    if ((sliceId > 0) && (sliceId < numSlices - 1))
+    if ((sliceId >= 0) && (sliceId < numSlices))
     {
         //Pointer to temporarily store the reference to the slice
         unsigned char **tempSliceHolder = slices[sliceId];
 
         std::ofstream headerFile;
-        headerFile.open("output.dat");
+        headerFile.open((output_prefix + ".dat").c_str());
         headerFile << width << " " << height << " 1" << std::endl;
         headerFile.close();
 
         std::ofstream outputFile;
-        outputFile.open("output.raw", std::ios::binary | std::ios::out);
+        outputFile.open((output_prefix + ".raw").c_str(), std::ios::binary | std::ios::out);
 
         for (int i = 0; i < height; i++)
         {
@@ -124,5 +134,6 @@ void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
         }
 
         outputFile.close();
+        PRINT("Extract method finished extracting requested slice.");
     }
 }
