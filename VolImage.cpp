@@ -98,3 +98,31 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
         return true;
     }
 }
+
+void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
+{
+
+    int numSlices = slices.size();
+
+    //If the sliceId is valid
+    if ((sliceId > 0) && (sliceId < numSlices - 1))
+    {
+        //Pointer to temporarily store the reference to the slice
+        unsigned char **tempSliceHolder = slices[sliceId];
+
+        std::ofstream headerFile;
+        headerFile.open("output.dat");
+        headerFile << width << " " << height << " 1" << std::endl;
+        headerFile.close();
+
+        std::ofstream outputFile;
+        outputFile.open("output.raw", std::ios::binary | std::ios::out);
+
+        for (int i = 0; i < height; i++)
+        {
+            outputFile.write((char *)tempSliceHolder[i], width);
+        }
+
+        outputFile.close();
+    }
+}
