@@ -1,25 +1,20 @@
-CC=g++         # the compiler
-LIBS=-lm       # the libraries we will ref
+CC=g++
+LIBS=-lm
 
 volimage: driver.o VolImage.o
 	$(CC) driver.o VolImage.o -o volimage -std=c++11 $(LIBS)
 
-# Implicit pattern rule for compiling object files
-%.o : %.cpp   # $< is the first dependancy and $@ is the target
+
+%.o : %.cpp   
 	$(CC) -c $< -o $@ -std=c++11
    
 
-# deletes all the object code files
+# deletes all the object code files as well as the previously generated outputs
 clean:
 	@rm -f *.o
 	@rm volimage
+	@rm -f ./brain_mri_raws_output/*.raw
+	@rm -f ./brain_mri_raws_output/*.dat
    
-# copies/moves the relevant binaries and/or libraries to the correct folders   
-install:
-  
-	@mv volimage ~/bin
-
-#./volimage MRI -d 0 1 testOutFinal
-#./volimage ./brain_mri_raws/MRI -g 30 rowSliceTest
 run:
-	./volimage ./brain_mri_raws/MRI
+	./volimage MRI
