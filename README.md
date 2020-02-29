@@ -15,7 +15,7 @@ The processed images that are output by the program are placed into the brain_mr
 ### The structure of the command line execution is as follows:
 
 ```bash
- volimage <imageBase> [-d i j output_file_name] [-x i output_file_name]
+ volimage <imageBase> [-d i j output_file_name] [-x i output_file_name] [-g i output_file_name]
 ```
 
 For example, and imageBase named "scan" would have a file “scan.dat” (the header file)
