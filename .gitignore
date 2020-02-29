@@ -1,6 +1,7 @@
 .DS_Store
 MRI_originals_png/
-brain_mri_raws/
+brain_mri_raws/*.data
+brain_mri_raws/*.raw
 diffmap.py
 viewer.py
 *.o
