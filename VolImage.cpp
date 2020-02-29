@@ -118,7 +118,7 @@ void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
         unsigned char **tempSliceHolder = slices[sliceId];
 
         std::ofstream headerFile;
-        headerFile.open(("./brain_mri_raws_output/" + output_prefix + ".dat").c_str());
+        headerFile.open(("./brain_mri_raws_output/" + output_prefix + ".data").c_str());
         headerFile << width << " " << height << " 1" << std::endl;
         headerFile.close();
 
