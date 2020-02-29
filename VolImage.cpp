@@ -30,7 +30,7 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
 
     if (!baseNameFile)
     {
-        std::cerr << "File with base name: " << baseName << " could not be opened for reading.";
+        std::cerr << "File with base name: " << baseName << " could not be opened for reading.\n";
         return false;
     }
     else //was able to open the image base header file
