@@ -26,7 +26,7 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
 
     std::ifstream baseNameFile;
     //try to open the image base header file
-    baseNameFile.open((baseName + ".data").c_str());
+    baseNameFile.open(("./brain_mri_raws/" + baseName + ".data").c_str());
 
     if (!baseNameFile)
     {
@@ -66,7 +66,7 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
         {
             std::ifstream ifs;
             //open the image slice for binary reading
-            ifs.open((baseName + std::to_string(i) + ".raw").c_str(), std::ios::in | std::ios::binary);
+            ifs.open(("./brain_mri_raws/" + baseName + std::to_string(i) + ".raw").c_str(), std::ios::in | std::ios::binary);
 
             //if was able to open the image for binary processing
             if (ifs.is_open())
@@ -97,7 +97,7 @@ bool CHNJAR003::VolImage::readImages(std::string baseName)
             }
             else
             {
-                PRINT("Unable to process file: " + baseName + std::to_string(i));
+                PRINT("Unable to process file: " + baseName + std::to_string(i) + "\n");
             }
         }
 
@@ -118,12 +118,12 @@ void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
         unsigned char **tempSliceHolder = slices[sliceId];
 
         std::ofstream headerFile;
-        headerFile.open((output_prefix + ".dat").c_str());
+        headerFile.open(("./brain_mri_raws_output/" + output_prefix + ".dat").c_str());
         headerFile << width << " " << height << " 1" << std::endl;
         headerFile.close();
 
         std::ofstream outputFile;
-        outputFile.open((output_prefix + ".raw").c_str(), std::ios::binary | std::ios::out);
+        outputFile.open(("./brain_mri_raws_output/" + output_prefix + ".raw").c_str(), std::ios::binary | std::ios::out);
         PRINT("Writing extracted image slice to file: " + output_prefix + ".raw\n");
         for (int i = 0; i < height; i++)
         {
@@ -131,7 +131,7 @@ void CHNJAR003::VolImage::extract(int sliceId, std::string output_prefix)
         }
 
         outputFile.close();
-        PRINT("Extract method finished extracting requested slice.\n");
+        PRINT("Extract method finished extracting requested slice.\n\n");
     }
 }
 
@@ -145,7 +145,7 @@ void CHNJAR003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_pre
         unsigned char *tempDiffRow = new unsigned char[width];
 
         std::ofstream outputSliceRaw;
-        outputSliceRaw.open((output_prefix + ".raw").c_str(), std::ios::binary | std::ios::out);
+        outputSliceRaw.open(("./brain_mri_raws_output/" + output_prefix + ".raw").c_str(), std::ios::binary | std::ios::out);
         PRINT("Writing computed difference map to file: " + output_prefix + ".raw\n");
         for (int r = 0; r < height; r++)
         {
@@ -160,7 +160,7 @@ void CHNJAR003::VolImage::diffmap(int sliceI, int sliceJ, std::string output_pre
         outputSliceRaw.close();
         delete[] tempDiffRow;
 
-        PRINT("Difference Map method finished computing difference map.\n");
+        PRINT("Difference Map method finished computing difference map.\n\n");
     }
 }
 
@@ -171,9 +171,11 @@ int CHNJAR003::VolImage::volImageSize(void)
     PRINT("Number of images: " + std::to_string(numImages) + "\n");
     //Store the number of bytes required for a char pointer
     int byteSizeUnsignedCharPointer = sizeof(unsigned char *);
+    int byteSizeUnsignedChar = sizeof(unsigned char);
 
     //Calculate the total number of bytes required to store all the image data
-    int numBytesRequired = numImages * height * width * byteSizeUnsignedCharPointer;
+    int numBytesRequired = numImages * (height * width * byteSizeUnsignedChar + height * byteSizeUnsignedCharPointer) +
+                           byteSizeUnsignedCharPointer * numImages;
 
     return numBytesRequired;
 }
@@ -184,7 +186,7 @@ void CHNJAR003::VolImage::extractRow(int row, std::string output_prefix)
 
     int numSlices = slices.size();
 
-    std::string outFileName = output_prefix + ".raw";
+    std::string outFileName = "./brain_mri_raws_output/" + output_prefix + ".raw";
     std::ofstream outputRowSliceStream;
     outputRowSliceStream.open(outFileName.c_str(), std::ios::binary | std::ios::out);
 
@@ -205,5 +207,5 @@ void CHNJAR003::VolImage::extractRow(int row, std::string output_prefix)
     outputRowSliceStream.close();
     delete[] tempRow;
 
-    PRINT("Image extracted along row " + std::to_string(row) + " of the volume of slices.\n");
+    PRINT("Image extracted along row " + std::to_string(row) + " of the volume of slices.\n\n");
 }
